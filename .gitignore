@@ -3,6 +3,7 @@ build/
 straylight/target/
 .straylight/
 straylight/Cargo.lock
+notes.md
 
 # Ignore cloned sub-repositories
 .github/
