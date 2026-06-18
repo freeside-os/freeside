@@ -22,6 +22,24 @@ freeside/ (Monorepo Root)
 
 ---
 
+## Workspace Setup & Bootstrapping
+
+To bootstrap the developer workspace (create directories and clone the sub-repositories):
+
+### Remote Bootstrapping (One-liner)
+You can bootstrap the workspace in any empty directory by running:
+```bash
+curl -fsSL https://raw.githubusercontent.com/freeside-os/freeside/main/setup.sh | bash
+```
+
+### Local Bootstrapping (Existing Clone)
+If you already cloned this repository:
+```bash
+just setup
+```
+
+---
+
 ## Build Prerequisites
 
 To run the bootstrap pipeline, your host system must satisfy the following:
