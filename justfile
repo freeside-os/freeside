@@ -1,4 +1,4 @@
-# Freeside Monorepo Master Orchestrator
+# Freeside Workspace Master Orchestrator
 set dotenv-load := false
 
 # List of Git repositories in the workspace
@@ -233,7 +233,7 @@ build-package-group group_name: build-straylight
 
 # Clean all subprojects and local build workspaces recursively
 clean:
-    @echo "=== [Root Coordinator] Cleaning Monorepo Workspace ==="
+    @echo "=== [Root Coordinator] Cleaning Multi-Repo Workspace ==="
     just clean-straylight
     @echo "=== [Bootstrap] Purging sandbox build artifacts ==="
     just -f bootstrap/justfile clean

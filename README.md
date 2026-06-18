@@ -1,4 +1,4 @@
-# Freeside OS Monorepo
+# Freeside OS Workspace
 
 Freeside is a next-generation, independent Linux distribution engineered for resilience, absolute predictability, and zero-maintenance overhead. It utilizes a declarative, stateless core, a modern systemd stack, and isolated compiler sandboxes to prevent dynamic host library contamination.
 
@@ -7,7 +7,7 @@ Freeside is a next-generation, independent Linux distribution engineered for res
 ## Workspace Layout
 
 ```text
-freeside/ (Monorepo Root)
+freeside/ (Workspace Root)
 ├── bootstrap/                   # Stage 0 bootstrap engine
 │   ├── justfile                 # Local build/clean targets
 │   ├── Stage0.sh                # Host-driven environment download & assembly

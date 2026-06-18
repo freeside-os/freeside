@@ -3,7 +3,7 @@
 set -euo pipefail
 
 # 1. Determine if we are running inside an existing clone or bootstrapping a new folder
-if [ -f "justfile" ] && grep -q "Freeside Monorepo Master Orchestrator" "justfile"; then
+if [ -f "justfile" ] && grep -q "Freeside Workspace Master Orchestrator" "justfile"; then
     echo "=== Running from within an existing Freeside workspace ==="
     WORKSPACE_DIR="."
 else
