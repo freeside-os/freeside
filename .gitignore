@@ -1,0 +1,13 @@
+# Ignore build directory containing build outputs and workspaces
+build/
+straylight/target/
+.straylight/
+straylight/Cargo.lock
+
+# Ignore cloned sub-repositories
+.github/
+bootstrap/
+packages/
+straylight/
+docs/
+
