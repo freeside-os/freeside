@@ -53,94 +53,22 @@ build-builder-sandbox: build-straylight
     #!/usr/bin/env bash
     set -euo pipefail
 
-    echo "=== [Root Coordinator] Cleaning previous packages and staging ==="
+    echo "=== [Root Coordinator] Cleaning previous packages and sandbox ==="
     sudo rm -rf build/packages
-    sudo rm -rf build/sandbox-staging
     sudo rm -rf build/sandbox
     mkdir -p build/packages
-    mkdir -p build/sandbox-staging
 
-    # Get topologically sorted packages in 'base' and 'builder' groups
-    echo "=== [Root Coordinator] Resolving build order and dependencies ==="
-    packages_to_build=($(python3 packages/resolve-packages.py))
+    echo "=== [Root Coordinator] Building base packages inside sandbox ==="
+    STRAYLIGHT_BUILDER_ROOT="$(pwd)/build" \
+    sudo -E build/straylight build --group base
 
-    echo "=== [Root Coordinator] Building base and builder packages ==="
-    for pkg in "${packages_to_build[@]}"; do
-        echo "--> Building ${pkg}..."
-        STRAYLIGHT_BUILDER_ROOT="$(pwd)/build" \
-        sudo -E build/straylight build "packages/${pkg}"
-    done
-
-    echo "=== [Root Coordinator] Setting up essential directories and UsrMerge symlinks ==="
-    SANDBOX_DIR="$(pwd)/build/sandbox-staging"
-    
-    # Ensure usr directories exist
-    sudo mkdir -p "${SANDBOX_DIR}/usr/bin"
-    sudo mkdir -p "${SANDBOX_DIR}/usr/lib"
-
-    # Create top-level symlinks
-    for link in bin sbin; do
-        if [[ ! -L "${SANDBOX_DIR}/${link}" ]]; then
-            sudo ln -sf usr/bin "${SANDBOX_DIR}/${link}"
-        fi
-    done
-
-    for link in lib lib64; do
-        if [[ ! -L "${SANDBOX_DIR}/${link}" ]]; then
-            sudo ln -sf usr/lib "${SANDBOX_DIR}/${link}"
-        fi
-    done
-
-    # Merge usr/sbin into usr/bin if it exists
-    if [[ -d "${SANDBOX_DIR}/usr/sbin" && ! -L "${SANDBOX_DIR}/usr/sbin" ]]; then
-        sudo cp -a "${SANDBOX_DIR}/usr/sbin/"* "${SANDBOX_DIR}/usr/bin/" 2>/dev/null || true
-        sudo rm -rf "${SANDBOX_DIR}/usr/sbin"
-    fi
-    sudo ln -sf bin "${SANDBOX_DIR}/usr/sbin"
-
-    # Create essential directories
-    for dir in tmp proc sys dev run var etc root home boot; do
-        sudo mkdir -p "${SANDBOX_DIR}/${dir}"
-    done
-
-    sudo chmod 1777 "${SANDBOX_DIR}/tmp"
-    sudo chmod 0555 "${SANDBOX_DIR}/proc"
-    sudo chmod 0555 "${SANDBOX_DIR}/sys"
-    sudo chmod 0755 "${SANDBOX_DIR}/dev"
-    sudo chmod 0755 "${SANDBOX_DIR}/run"
-    sudo chmod 0755 "${SANDBOX_DIR}/var"
-    sudo chmod 0755 "${SANDBOX_DIR}/etc"
-    sudo chmod 0700 "${SANDBOX_DIR}/root"
-
-    # var subdirectories
-    sudo mkdir -p "${SANDBOX_DIR}/var/tmp"
-    sudo chmod 1777 "${SANDBOX_DIR}/var/tmp"
-    sudo mkdir -p "${SANDBOX_DIR}/var/log"
-    sudo mkdir -p "${SANDBOX_DIR}/var/cache"
-
-    echo "=== [Root Coordinator] Installing packages into sandbox staging using straylight ==="
-    mkdir -p build/pkg-cache
-    for pkg in "${packages_to_build[@]}"; do
-        manifest="packages/${pkg}/package.manifest"
-        pkg_version=$(grep -E '^\s*version\s*=\s*' "$manifest" | head -n1 | cut -d'"' -f2)
-        tarball="build/packages/${pkg}-${pkg_version}-1.tar.gz"
-        echo "--> Installing package: $(basename "${tarball}")"
-        STRAYLIGHT_RW_SYSTEM_ROOT="$(pwd)/build/sandbox-staging" \
-        STRAYLIGHT_PKG_CACHE_ROOT="$(pwd)/build/pkg-cache" \
-        sudo -E build/straylight install-pkg "${tarball}"
-    done
-
-    # Convenience symlinks
-    if [[ -f "${SANDBOX_DIR}/usr/bin/bash" && ! -e "${SANDBOX_DIR}/usr/bin/sh" ]]; then
-        sudo ln -sf bash "${SANDBOX_DIR}/usr/bin/sh"
-    fi
-    if [[ -f "${SANDBOX_DIR}/usr/bin/python3" && ! -e "${SANDBOX_DIR}/usr/bin/python" ]]; then
-        sudo ln -sf python3 "${SANDBOX_DIR}/usr/bin/python"
-    fi
+    echo "=== [Root Coordinator] Building builder packages inside sandbox ==="
+    STRAYLIGHT_BUILDER_ROOT="$(pwd)/build" \
+    sudo -E build/straylight build --group builder
 
     echo "=== [Root Coordinator] Creating final sandbox tarball ==="
     OUTPUT="$(pwd)/build/sandbox-root.tgz"
-    sudo tar -czf "${OUTPUT}" -C "${SANDBOX_DIR}" .
+    sudo tar -czf "${OUTPUT}" -C "$(pwd)/build/sandbox" .
     
     if [[ -n "${SUDO_UID:-}" ]]; then
         sudo chown "${SUDO_UID}:${SUDO_GID:-${SUDO_UID}}" "${OUTPUT}"
