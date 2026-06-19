@@ -53,8 +53,7 @@ build-builder-sandbox: build-straylight
     #!/usr/bin/env bash
     set -euo pipefail
 
-    echo "=== [Root Coordinator] Cleaning previous packages and sandbox ==="
-    sudo rm -rf build/packages
+    echo "=== [Root Coordinator] Cleaning previous Sandbox ==="
     sudo rm -rf build/sandbox
     mkdir -p build/packages
 
@@ -70,9 +69,9 @@ build-builder-sandbox: build-straylight
     OUTPUT="$(pwd)/build/sandbox-root.tgz"
     sudo tar -czf "${OUTPUT}" -C "$(pwd)/build/sandbox" .
     
-    if [[ -n "${SUDO_UID:-}" ]]; then
-        sudo chown "${SUDO_UID}:${SUDO_GID:-${SUDO_UID}}" "${OUTPUT}"
-    fi
+    USER_UID="${SUDO_UID:-$(id -u)}"
+    USER_GID="${SUDO_GID:-$(id -g)}"
+    sudo chown -R "${USER_UID}:${USER_GID}" "$(pwd)/build"
 
     tarball_size="$(du -h "${OUTPUT}" | awk '{print $1}')"
     echo "================================================================"
