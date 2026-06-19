@@ -20,6 +20,8 @@ setup:
 
 # List git status of all configured repositories
 status:
+    @echo "=== Workspace ==="
+    @git status -s; echo ""
     @for dir in {{git_repos}}; do \
         if [ -d "$dir/.git" ]; then \
             echo "=== Repository: $dir ==="; \
@@ -30,6 +32,8 @@ status:
 
 # Show git diff of all configured repositories
 diff:
+    @echo "=== Workspace ==="
+    @git diff --stat; git diff; echo ""
     @for dir in {{git_repos}}; do \
         if [ -d "$dir/.git" ]; then \
             echo "=== Diff for: $dir ==="; \
@@ -55,14 +59,6 @@ build-builder-sandbox: build-straylight
     sudo rm -rf build/sandbox
     mkdir -p build/packages
     mkdir -p build/sandbox-staging
-
-    if [ -f build/sandbox-root-bootstrap.tgz ]; then
-        echo "=== [Root Coordinator] Restoring bootstrap sandbox-root.tgz ==="
-        cp build/sandbox-root-bootstrap.tgz build/sandbox-root.tgz
-    else
-        echo "Error: build/sandbox-root-bootstrap.tgz not found. Cannot bootstrap package building."
-        exit 1
-    fi
 
     # Get topologically sorted packages in 'base' and 'builder' groups
     echo "=== [Root Coordinator] Resolving build order and dependencies ==="
