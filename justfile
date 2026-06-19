@@ -58,11 +58,15 @@ build-builder-sandbox: build-straylight
     mkdir -p build/packages
 
     echo "=== [Root Coordinator] Building base packages inside sandbox ==="
+    STRAYLIGHT_PACKAGES_ROOT="$(pwd)/packages" \
     STRAYLIGHT_BUILDER_ROOT="$(pwd)/build" \
+    STRAYLIGHT_BUILDER_OUTPUT_ROOT="$(pwd)/build/packages" \
     sudo -E build/straylight build --group base
 
     echo "=== [Root Coordinator] Building builder packages inside sandbox ==="
+    STRAYLIGHT_PACKAGES_ROOT="$(pwd)/packages" \
     STRAYLIGHT_BUILDER_ROOT="$(pwd)/build" \
+    STRAYLIGHT_BUILDER_OUTPUT_ROOT="$(pwd)/build/packages" \
     sudo -E build/straylight build --group builder
 
     echo "=== [Root Coordinator] Creating final sandbox tarball ==="
@@ -99,8 +103,10 @@ build-straylight:
 build-package pkg_name: build-straylight
     #!/usr/bin/env bash
     set -euo pipefail
+    STRAYLIGHT_PACKAGES_ROOT="$(pwd)/packages" \
     STRAYLIGHT_BUILDER_ROOT="$(pwd)/build" \
-    sudo -E build/straylight build "packages/{{pkg_name}}"
+    STRAYLIGHT_BUILDER_OUTPUT_ROOT="$(pwd)/build/packages" \
+    sudo -E build/straylight build --pkg "{{pkg_name}}"
 
 # Compile all user-space packages belonging to a specific group in topological order
 build-package-group group_name: build-straylight
@@ -135,8 +141,10 @@ build-package-group group_name: build-straylight
                     echo "=== [Group Builder] Skipping package: ${pkg} (already built) ==="
                 else
                     echo "=== [Group Builder] Building package: ${pkg} (group: {{group_name}}) ==="
+                    STRAYLIGHT_PACKAGES_ROOT="$(pwd)/packages" \
                     STRAYLIGHT_BUILDER_ROOT="$(pwd)/build" \
-                    sudo -E build/straylight build "packages/${pkg}"
+                    STRAYLIGHT_BUILDER_OUTPUT_ROOT="$(pwd)/build/packages" \
+                    sudo -E build/straylight build --pkg "${pkg}"
                     built=$((built + 1))
                 fi
             fi
