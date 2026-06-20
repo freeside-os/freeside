@@ -98,3 +98,13 @@ When creating or modifying package recipes under the `packages/` repository:
     CFLAGS = "-O3"
     CONFIGURE_ARGS = "--prefix=/usr --enable-shared"
     ```
+
+---
+
+## 5. Answering Questions vs. Executing Tasks
+
+When the user asks a question, the agent must adhere strictly to the following rules:
+*   **Avoid Rogue Actions:** If the user asks a question, do not perform unsolicited codebase modifications or run commands (such as builds or compiles) unless explicitly requested or strictly necessary to verify the answer. Focus on answering the question directly.
+*   **Provide Grounded, Accurate Answers:** Do not provide speculative, hallucinated, or guess-based answers. Answers must be factual and grounded in the codebase, documentation, or verified external sources.
+*   **Search and Verify First:** If the answer is not immediately known, use codebase search tools or web search (`search_web`) to verify the facts. If the information can be found via a web search, search for it rather than guessing.
+
