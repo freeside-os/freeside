@@ -75,7 +75,7 @@ build-builder-sandbox: build-straylight
     
     USER_UID="${SUDO_UID:-$(id -u)}"
     USER_GID="${SUDO_GID:-$(id -g)}"
-    sudo find "$(pwd)/build" -xdev -exec chown "${USER_UID}:${USER_GID}" {} +
+    sudo find "$(pwd)/build" -xdev -exec chown -h "${USER_UID}:${USER_GID}" {} +
 
     tarball_size="$(du -h "${OUTPUT}" | awk '{print $1}')"
     echo "================================================================"
