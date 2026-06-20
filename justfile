@@ -75,7 +75,7 @@ build-builder-sandbox: build-straylight
     
     USER_UID="${SUDO_UID:-$(id -u)}"
     USER_GID="${SUDO_GID:-$(id -g)}"
-    sudo chown -R --one-file-system "${USER_UID}:${USER_GID}" "$(pwd)/build"
+    sudo find "$(pwd)/build" -xdev -exec chown "${USER_UID}:${USER_GID}" {} +
 
     tarball_size="$(du -h "${OUTPUT}" | awk '{print $1}')"
     echo "================================================================"
@@ -168,6 +168,8 @@ clean:
     just clean-straylight
     @echo "=== [Bootstrap] Purging sandbox build artifacts ==="
     just -f bootstrap/justfile clean
+    @echo "=== [Root Coordinator] Purging build logs ==="
+    sudo rm -f build/*.log
 
 # Clean straylight build artifacts and target files
 clean-straylight:
