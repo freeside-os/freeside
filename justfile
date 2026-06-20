@@ -21,11 +21,11 @@ setup:
 # List git status of all configured repositories
 status:
     @echo "=== Workspace ==="
-    @git status -s; echo ""
+    @git status -sb; echo ""
     @for dir in {{git_repos}}; do \
         if [ -d "$dir/.git" ]; then \
             echo "=== Repository: $dir ==="; \
-            git -C "$dir" status -s; \
+            git -C "$dir" status -sb; \
             echo ""; \
         fi \
     done
