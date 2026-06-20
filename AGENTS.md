@@ -52,17 +52,21 @@ freeside/ (Local Workspace - Not in Git)
 
 ### Compilation Workflows
 To compile the system locally:
-1.  **Build Bootstrap Core:** Generates `build/sandbox-root.tgz` (Stage 0 Alpine container build and assembly):
+1.  **Build Bootstrap Core:** Generates `build/bootstrap/sandbox-root.tgz` (Stage 0 Alpine container build and assembly):
     ```bash
-    just build-bootstrap
+    just bootstrap::build-sandbox
     ```
+    *Note: Copy this to `build/sandbox-root.tgz` before building straylight packages.*
 2.  **Build Straylight CLI:** Compiles the Rust utility binary and puts it in `build/straylight`:
     ```bash
-    just build-straylight
+    just straylight::build
     ```
 3.  **Compile Packages:** Use the built `straylight` command (requires sudo for chroot containment):
     ```bash
-    sudo build/straylight build packages/<package-name>
+    STRAYLIGHT_PACKAGES_ROOT="$(pwd)/packages" \
+    STRAYLIGHT_BUILDER_ROOT="$(pwd)/build" \
+    STRAYLIGHT_BUILDER_OUTPUT_ROOT="$(pwd)/build/packages" \
+    sudo -E build/straylight build --pkg <package-name>
     ```
 
 ---

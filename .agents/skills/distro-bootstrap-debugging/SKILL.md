@@ -111,7 +111,7 @@ When a package compilation fails, `fspack.py` captures the complete stdout/stder
 *   **Automatic Cleanup**: By default, successful builds will automatically delete their log files.
 *   **Preserving Logs on Success**: To keep log files even for successful builds (e.g., for profiling or verification), run the build command with the `--keep-all-logs` flag:
     ```bash
-    just build-package <pkg_name> --keep-all-logs
+    just pkg::build <pkg_name> --keep-all-logs  # Or use alias: just build-package <pkg_name> --keep-all-logs
     ```
 
 ---

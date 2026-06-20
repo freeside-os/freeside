@@ -1,9 +1,9 @@
 # Ignore build directory containing build outputs and workspaces
 build/
 straylight/target/
-.straylight/
 straylight/Cargo.lock
 notes.md
+sandbox/
 
 # Ignore cloned sub-repositories
 .github/

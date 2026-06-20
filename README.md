@@ -52,28 +52,45 @@ To run the bootstrap pipeline, your host system must satisfy the following:
 ## Build Instructions
 
 ### 1. Build the Bootstrap Core
-To build the self-contained rootfs and compile the `builder` profile compiler core:
-From the root of the monorepo, execute `just` as a normal user:
-```bash
-just build-bootstrap
-```
-*This command runs Stage 0 host assembly and packages the results. Privilege escalation (sudo) is managed internally within the recipes for the specific stages requiring root.*
+Freeside OS bootstrapping is a two-stage process:
+
+* **Stage 0: Alpine Host Sandbox (One-time Setup)**
+  Build the initial musl-based compiler sandbox core inside a Docker container:
+  ```bash
+  just bootstrap::build-sandbox
+  ```
+  This generates `build/bootstrap/sandbox-root.tgz`.
+
+* **Stage 0 to Stage 1 Promotion (Manual Step)**
+  Since Straylight expects the sandbox core at the root of the builder output, manually copy the sandbox tarball:
+  ```bash
+  cp build/bootstrap/sandbox-root.tgz build/sandbox-root.tgz
+  ```
+
+* **Stage 1: Pure Sandbox Recompilation**
+  To rebuild the base and builder packages inside the isolated Freeside sandbox (rebuilding a pure environment):
+  ```bash
+  just sys::build-sandbox   # Or use alias: just build-sandbox
+  ```
+  This compiles the packages inside the sandbox and generates the final, pure `build/sandbox-root.tgz`.
 
 ### 2. Build the Straylight CLI
 To build the `straylight` package manager CLI:
 From the root of the monorepo, execute:
 ```bash
-just build-straylight
+just straylight::build    # Or use alias: just build-straylight
 ```
 This compiles the Rust binary and copies it to `build/straylight`.
 
 ### 3. Running Straylight Build
 You can use `straylight` to compile packages:
 ```bash
-sudo build/straylight build <path-to-package-dir>
+STRAYLIGHT_PACKAGES_ROOT="$(pwd)/packages" \
+STRAYLIGHT_BUILDER_ROOT="$(pwd)/build" \
+STRAYLIGHT_BUILDER_OUTPUT_ROOT="$(pwd)/build/packages" \
+sudo -E build/straylight build --pkg <package-name>
 ```
-* By default, the temporary build workspaces are located under `build/straylight/`.
-* You can override this build directory path by setting the `STRAYLIGHT_CACHE_DIR` or `STRAYLIGHT_BUILD_DIR` environment variables.
+* By default, the temporary build workspaces are located under `build/workspace/`.
 * The successfully built package tarball is saved under the central directory `build/packages/`.
 
 ### 4. Output Artifacts
@@ -85,12 +102,12 @@ Once completed, the final package will be created in:
 ### 5. Cleaning the Workspace
 To purge transient workspaces, Cargo target directories, build cache, and intermediate build directories (excluding compiled packages):
 ```bash
-just clean
+just sys::clean           # Or use alias: just clean
 ```
 
 To purge compiled user-space packages:
 ```bash
-just clean-packages
+just pkg::clean           # Or use alias: just clean-packages
 ```
 
 

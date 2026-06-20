@@ -29,6 +29,7 @@ REPOS=(
     "git@github.com:freeside-os/packages.git"
     "git@github.com:freeside-os/straylight.git"
     "git@github.com:freeside-os/docs.git"
+    "git@github.com:freeside-os/.github.git"
 )
 
 for repo in "${REPOS[@]}"; do
@@ -48,5 +49,5 @@ if [ "${WORKSPACE_DIR}" != "." ]; then
     echo "  cd ${WORKSPACE_DIR}"
 fi
 echo "  just status             - Check status of all repositories"
-echo "  just build-straylight   - Compile the Straylight CLI"
-echo "  just build-builder-sandbox - Build the bootstrap core sandbox"
+echo "  just straylight::build  - Compile the Straylight CLI"
+echo "  just sys::build-sandbox - Build the Freeside sandbox packages"
