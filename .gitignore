@@ -3,6 +3,7 @@ build/
 straylight/target/
 straylight/Cargo.lock
 notes.md
+.env
 sandbox/
 
 # Ignore cloned sub-repositories
@@ -11,4 +12,4 @@ bootstrap/
 packages/
 straylight/
 docs/
-
+wintermute/

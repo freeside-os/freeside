@@ -2,7 +2,7 @@
 set dotenv-load := false
 set working-directory := ".."
 
-git_repos := "bootstrap packages straylight docs .github"
+git_repos := "bootstrap packages straylight docs .github wintermute"
 
 # List git status of all configured repositories
 status:

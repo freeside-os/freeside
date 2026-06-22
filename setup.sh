@@ -29,6 +29,7 @@ REPOS=(
     "git@github.com:freeside-os/packages.git"
     "git@github.com:freeside-os/straylight.git"
     "git@github.com:freeside-os/docs.git"
+    "git@github.com:freeside-os/wintermute.git"
     "git@github.com:freeside-os/.github.git"
 )
 
