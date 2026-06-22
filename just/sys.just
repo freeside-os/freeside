@@ -2,6 +2,8 @@
 set dotenv-load := false
 set working-directory := ".."
 
+keep_sandbox := "false"
+
 # Bootstrap the developer workspace (clone repositories, create directories)
 setup:
     @./setup.sh
@@ -13,8 +15,12 @@ build-sandbox:
     
     just straylight::build
 
-    echo "=== [Root Coordinator] Cleaning previous Sandbox ==="
-    sudo rm -rf build/sandbox
+    if [ "{{keep_sandbox}}" != "true" ]; then
+        echo "=== [Root Coordinator] Cleaning previous Sandbox ==="
+        sudo rm -rf build/sandbox
+    else
+        echo "=== [Root Coordinator] Keeping previous Sandbox ==="
+    fi
     mkdir -p build/packages
 
     echo "=== [Root Coordinator] Building base packages inside sandbox ==="

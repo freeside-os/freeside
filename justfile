@@ -1,6 +1,8 @@
 # Freeside Workspace Master Orchestrator
 set dotenv-load := false
 
+keep_sandbox := "false"
+
 # Import sub-modules
 mod bootstrap 'bootstrap/justfile'
 mod sys 'just/sys.just'

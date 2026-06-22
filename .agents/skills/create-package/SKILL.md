@@ -38,6 +38,7 @@ The auto-converter provides a baseline, but the manifest and justfile **must** b
 ### A. Manifest Checklist (`package.manifest`):
 *   **Version-Dynamic**: Verify name and version are correct.
 *   **Dependencies**: Arch dependency names (e.g., `openssl-1.1`, `glibc`) must be mapped to Freeside-specific equivalent package names (e.g., `openssl`, `musl`).
+*   **Dependency Existence**: Ensure all listed dependencies correspond to actual package directories under `packages/`. For example, in Freeside, the entire LLVM compiler infrastructure (including Clang, LLD, and Compiler-RT) is consolidated under the single `llvm` package; do not list `clang` or `lld` as separate packages.
 *   **Group Assignment**: Assign a `group` value (see classification details in Section 3).
 *   **Build Table**: Ensure the `[build]` table is declared with necessary build-time dependencies (e.g., `make`, `cmake`, `ninja`, `pkgconf`).
 
@@ -54,6 +55,18 @@ The auto-converter provides a baseline, but the manifest and justfile **must** b
         if [ -d "$DESTDIR/usr/bin" ]; then find "$DESTDIR/usr/bin" -type f -exec chmod 755 {} +; fi
         if [ -d "$DESTDIR/usr/lib" ]; then find "$DESTDIR/usr/lib" -name "*.so*" -exec chmod 755 {} + || true; fi
     ```
+
+### C. Package Verification (`fspack.py verify`):
+After completing the checklists, always verify the package's validity by running the package verifier:
+```bash
+python3 packages/fspack.py verify <pkgname>
+```
+This automatically validates:
+*   Directory layout and existence of required files (`package.manifest` and `package.justfile`).
+*   TOML parsing and schema constraints (missing/invalid fields, misplaced build environment flags, and source checksums).
+*   Presence of local source files (if specified).
+*   Topological checks ensuring dependencies exist under the repository and that no cycles exist.
+*   Existence of the `build:` and `package:` targets in the `justfile`.
 
 ---
 

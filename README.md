@@ -73,6 +73,7 @@ Freeside OS bootstrapping is a two-stage process:
   just sys::build-sandbox   # Or use alias: just build-sandbox
   ```
   This compiles the packages inside the sandbox and generates the final, pure `build/sandbox-root.tgz`.
+  *(To skip cleaning the existing `build/sandbox` directory, pass the `keep_sandbox=true` variable: `just keep_sandbox=true build-sandbox`)*
 
 ### 2. Build the Straylight CLI
 To build the `straylight` package manager CLI:
@@ -92,6 +93,14 @@ sudo -E build/straylight build --pkg <package-name>
 ```
 * By default, the temporary build workspaces are located under `build/workspace/`.
 * The successfully built package tarball is saved under the central directory `build/packages/`.
+* **Incremental Builds / Debugging**: You can keep the build sandbox and workspace directories to speed up iterative recompilation by passing the `keep_sandbox=true` flag via `just`:
+  ```bash
+  just keep_sandbox=true build <package-name>
+  ```
+  Or by passing the `--keep-sandbox` flag directly to straylight:
+  ```bash
+  sudo -E build/straylight build --pkg <package-name> --keep-sandbox
+  ```
 
 ### 4. Output Artifacts
 Once completed, the final package will be created in:

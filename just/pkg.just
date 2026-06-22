@@ -2,6 +2,8 @@
 set dotenv-load := false
 set working-directory := ".."
 
+keep_sandbox := "false"
+
 # Compile a user-space package by name
 build pkg_name:
     #!/usr/bin/env bash
@@ -9,10 +11,15 @@ build pkg_name:
     
     just straylight::build
     
+    FLAGS=""
+    if [ "{{keep_sandbox}}" = "true" ]; then
+        FLAGS="--keep-sandbox"
+    fi
+    
     STRAYLIGHT_PACKAGES_ROOT="$(pwd)/packages" \
     STRAYLIGHT_BUILDER_ROOT="$(pwd)/build" \
     STRAYLIGHT_BUILDER_OUTPUT_ROOT="$(pwd)/build/packages" \
-    sudo -E build/straylight build --pkg "{{pkg_name}}"
+    sudo -E build/straylight build --pkg "{{pkg_name}}" $FLAGS
 
 # Compile all user-space packages belonging to a specific group in topological order
 build-group group_name:
@@ -21,6 +28,11 @@ build-group group_name:
     
     just straylight::build
     
+    FLAGS=""
+    if [ "{{keep_sandbox}}" = "true" ]; then
+        FLAGS="--keep-sandbox"
+    fi
+
     # 1. Generate dependency pairs and topologically sort all packages
     sorted_packages=$( {
         for manifest in packages/*/package.manifest; do
@@ -52,7 +64,7 @@ build-group group_name:
                     STRAYLIGHT_PACKAGES_ROOT="$(pwd)/packages" \
                     STRAYLIGHT_BUILDER_ROOT="$(pwd)/build" \
                     STRAYLIGHT_BUILDER_OUTPUT_ROOT="$(pwd)/build/packages" \
-                    sudo -E build/straylight build --pkg "${pkg}"
+                    sudo -E build/straylight build --pkg "${pkg}" $FLAGS
                     built=$((built + 1))
                 fi
             fi
