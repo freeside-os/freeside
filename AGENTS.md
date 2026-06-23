@@ -70,11 +70,14 @@ To compile the system locally:
     ```
 
 ### Package Creation & Maintenance (Wintermute)
-*   **Use Wintermute:** Do not manually convert or modify package recipes from scratch. Always use the **Wintermute** packaging agent (`/home/dq/Code/freeside/wintermute`) for:
+*   **Use Wintermute:** Do not manually convert or modify package recipes from scratch. Always use the **Wintermute** packaging agent ([wintermute](file:///home/dq/Code/freeside/wintermute)) for:
+    *   **Creating:** Building a new package recipe and justfile from scratch via web-scaffolding search (`create`).
+    *   **Fixing:** Diagnosing, patching, and correcting sandbox compile issues on broken package builds (`fix`).
     *   **Importing:** Converting and staging new package recipes from Arch Linux GitLab (`import`).
     *   **Upgrading:** Upstream version bumps, updating source archive hashes, and rebuilding packages (`upgrade`).
     *   **CI Review:** Enforcing UsrMerge guidelines, permissions compliance, and resolving workspace dependencies (`review`).
     *   **Security Audits:** Scanning packages against live CVE feeds (OSV) and executing automated upgrades (`security_audit`).
+*   **Documentation Reference:** Refer to the comprehensive [Wintermute Packaging Agent Guide](file:///home/dq/Code/freeside/docs/guides/wintermute.md) for detailed execution flows and command examples.
 
 ---
 

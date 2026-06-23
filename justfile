@@ -22,3 +22,12 @@ alias build-package-group := pkg::build-group
 alias status := git::status
 alias diff := git::diff
 alias build := pkg::build
+
+# Run wintermute packaging agent
+wintermute query:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd wintermute
+    source .env
+    agents-cli run "{{query}}"
+

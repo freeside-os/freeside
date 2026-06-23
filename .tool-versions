@@ -1,3 +1,4 @@
 python 3.13.2
 uv 0.8.7
 just 1.51.0
+gcloud 504.0.1
