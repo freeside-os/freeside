@@ -4,15 +4,15 @@ set working-directory := ".."
 
 # Run wintermute interactive command line interface (or with optional query)
 run query="":
-    cd wintermute && mkdir -p .adk && uv run adk run app {{ if query == "" { "" } else { quote(query) } }} \
-        --session_service_uri "sqlite:///$(pwd)/.adk/session.db" \
-        --artifact_service_uri "file:///$(pwd)/.adk/artifacts"
+    cd wintermute && uv run adk run app {{ if query == "" { "" } else { quote(query) } }} \
+        --session_service_uri "wintersession://" \
+        --artifact_service_uri "winterartifact://"
 
 # Start the local ADK Web UI
 web:
-    cd wintermute && mkdir -p .adk && uv run adk web app \
-        --session_service_uri "sqlite:///$(pwd)/.adk/session.db" \
-        --artifact_service_uri "file:///$(pwd)/.adk/artifacts" \
+    cd wintermute && uv run adk web app \
+        --session_service_uri "wintersession://" \
+        --artifact_service_uri "winterartifact://" \
         2>&1 | tee .adk/server.log
 
 # Run wintermute tests
