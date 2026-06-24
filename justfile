@@ -9,6 +9,7 @@ mod sys 'just/sys.just'
 mod git 'just/git.just'
 mod straylight 'just/straylight.just'
 mod pkg 'just/pkg.just'
+mod wintermute 'just/wintermute.just'
 
 # Global entry points and backward-compatible aliases
 alias setup := sys::setup
@@ -23,11 +24,4 @@ alias status := git::status
 alias diff := git::diff
 alias build := pkg::build
 
-# Run wintermute packaging agent
-wintermute query:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    cd wintermute
-    source .env
-    agents-cli run "{{query}}"
 
