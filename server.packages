@@ -1,0 +1,14 @@
+httpie
+strace
+fish
+zsh
+jq
+podman
+podman-docker
+podman-compose
+nftables
+dropbear
+tailscale
+netcat-openbsd
+iproute2
+bmon
